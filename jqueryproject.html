@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Jquery Lab</title>
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> </link> -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<style>
+  #sortable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+  #sortable li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }
+  #sortable li span { position: absolute; margin-left: -1.3em; }
+</style>
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+  $( function() {
+    $( "#accordion" ).accordion({
+      active: false,
+      collapsible: true
+    });
+    hideDrawer();
+  });
+
+  $( function() {
+    $( "#actual_list_of_3" ).sortable();
+    $( "#actual_list_of_3" ).disableSelection();
+  });
+
+  $(document).on("click", "#rwb_button", function() {
+    $("ul li:nth-child(1)").css('background-color', '#CD5C5C');
+    $("ul li:nth-child(2)").css('background-color', '#FFFFFF');
+    $("ul li:nth-child(3)").css('background-color', '#00BFFF');
+  });
+
+  var buttonClickCounter = 0;
+  $(document).on("click", "#rectangle_button", function() {
+    buttonClickCounter++;
+    $( "#rectangle" ).css('position', 'relative');
+    animateRect();
+  });
+
+  function animateRect() {
+    if (buttonClickCounter % 2 == 1) {
+      $( "#rectangle" ).animate({left: $(window).width()-400}, "slow", function() {
+        $( "#rectangle" ).animate({left: '0px'}, "slow", animateRect());
+      });
+    }
+  }
+
+</script>
+
+<script>
+$(document).on("click", '[id^="drawer_outer_pos"]', function() {
+  var num = this.id.slice(16);
+  transferToDrawer(num);
+});
+
+function transferToDrawer() {
+  var pos = arguments[0];
+  $( "#drawer_outer_pos"+pos ).hide();
+  var i;
+  var foundIt = 0;
+  for (i = 1; i < 4; i++) {
+    if ($( "#drawer_inner_pos"+i ).text() === "-" && foundIt === 0) {
+      $( "#drawer_inner_pos"+i ).text($( "#drawer_outer_pos"+pos ).text());
+      foundIt = 1;
+    }
+  }
+}
+
+$(document).on("click", "#empty_drawer_button", function() {
+  for (var i = 1; i < 4; i++) {
+    $( "#drawer_inner_pos"+i ).text("-");
+    $( "#drawer_outer_pos"+i).show();
+  }
+});
+
+$(document).on("click", "#open_close_drawer_button", function() {
+  if ($( "#drawer_inner_pos1" ).is(":hidden")) {
+    $('[id^="drawer_inner_pos"]').show();
+    $( "#empty_drawer_button" ).show();
+  }
+  else {
+    hideDrawer();
+  }
+});
+
+function hideDrawer() {
+  $('[id^="drawer_inner_pos"]').hide();
+  $( "#empty_drawer_button" ).hide();
+}
+
+</script>
+
+</head>
+
+<body>
+
+<div id="accordion">
+
+<h3 id="list_of_3">List of 3</h3>
+<div>
+  <ul id="actual_list_of_3">
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>It was the best of times, it was the worst of times.</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Drag now or forever hold your peace.</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>This sentence will go down in history.</li>
+  </ul>
+  <button id="rwb_button">Color List Items Red, White and Blue In That Order</button>
+</div>
+
+<h3 id="oscillate">Oscillate</h3>
+<div>
+  <button id="rectangle_button">Start/Stop</button>
+  <div id="rectangle">
+    <svg width="300" height="150">
+      <rect width="300" height="150" style="fill:rgb(255,0,0);stroke-width:3;stroke:rgb(0,0,0)" />
+    </svg>
+  </div>
+</div>
+
+<h3 id="drawer_section">Drawer</h3>
+<div id="drawer_contents">
+  <p id="drawer_outer_pos1">Stately, plump Buck Mulligan came from the stairhead, bearing a bowl of lather on which a mirror and a razor lay crossed.</p>
+  <p id="drawer_outer_pos2">A yellow dressinggown, ungirdled, was sustained gently behind him on the mild morning air.</p>
+  <p id="drawer_outer_pos3">He held the bowl aloft and intoned: Introibo ad altare Dei.</p>
+  <div id="drawer">
+    <button id="open_close_drawer_button">Open/Close Drawer</button>
+    <div id="inside_drawer">
+      <p id="drawer_inner_pos1">-</p>
+      <p id="drawer_inner_pos2">-</p>
+      <p id="drawer_inner_pos3">-</p>
+      <button id="empty_drawer_button">Empty Drawer</button>
+    </div>
+  </div>
+</div>
+
+</div> <!--accordion-->
+
+</body>
+
+</html>
